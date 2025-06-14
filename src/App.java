@@ -16,6 +16,20 @@ class Song {
     }
 }
 
+class Nodo {
+    Song song;
+    Nodo next;
+
+    public Nodo(Song song) {
+        this.song = song;
+    }
+
+    public Nodo(Song song, Nodo next) {
+        this.song = song;
+        this.next = next;
+    }
+}
+
 public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello, World!");
