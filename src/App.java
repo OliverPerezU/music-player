@@ -61,6 +61,22 @@ class List {
 }
 
 public class App {
+    public static void cleanConsole() {
+        System.out.println("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    public static void menu() {
+        System.out.println("Bienvenido al reproductor de música 🎶");
+        System.out.println("1. Crear playlist.");
+        System.out.println("2. Añadir canciones a la playlist.");
+        System.out.println("3. Mostrar canciones de la playlist");
+        System.out.println("4. Buscar canción");
+        System.out.println("5. Eliminar canción");
+        System.out.println("6. Salir");
+        System.out.println("Selecciones la opción que desea realizar");
+    }
+
     public static void main(String[] args) throws Exception {
         System.out.println("Hello, World!");
     }
