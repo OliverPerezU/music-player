@@ -12,9 +12,9 @@ class Song {
     }
 
     public void details() {
-        System.out.println("Título:" + title);
-        System.out.println("Artista:" + artist);
-        System.out.println("Duración:" + time + " segundos");
+        System.out.println("Título: " + title);
+        System.out.println("Artista: " + artist);
+        System.out.println("Duración: " + time + " segundos");
     }
 }
 
@@ -108,7 +108,165 @@ public class App {
         }
     }
 
+    public static void emptyList() {
+        System.out.println("---- ---- ---- ---- ---- ----");
+        System.out.println("🎶 La playlist está vacía. 🎶");
+        System.out.println("---- ---- ---- ---- ---- ----");
+        return;
+    }
+
+    public static int getOption(Scanner scanner) {
+        try {
+            int option = numEntry(scanner);
+            if (option < 1 || option > 6) {
+                System.out.println("Por favor ingresa una opción válida entre 1 y 6.");
+                return getOption(scanner);
+            }
+            return option;
+        } catch (Exception e) {
+            System.out.println("Oucrrió un error al obtener la opción. Por favor, inténtalo de nuevo.");
+            return getOption(scanner);
+        }
+    }
+
+    public static void printSongs(PlayList list) {
+        if (list.start == null) {
+            emptyList();
+        } else {
+            list.print();
+        }
+    }
+
+    public static void searchSong(Scanner scanner, PlayList playList) {
+        try {
+            if (playList.start == null) {
+                emptyList();
+                return;
+            }
+            System.out.println("Introduce el título de la canción que deseas buscar:");
+            String title = stringEntry(scanner);
+            Nodo current = playList.start;
+            boolean found = false;
+            while (current != null) {
+                if (current.song.title.equalsIgnoreCase(title)) {
+                    System.out.println();
+                    System.out.println("Canción encontrada:");
+                    System.out.println();
+                    current.song.details();
+                    found = true;
+                    break;
+                }
+                current = current.next;
+            }
+            if (!found) {
+                System.out.println("❌ Canción no encontrada en la playlist. \n");
+            }
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println("❌ Ocurrió un error al buscar la canción. Por favor, inténtalo de nuevo.");
+            searchSong(scanner, playList);
+        }
+    }
+
+    public static void addSong(Scanner scanner, PlayList playList) {
+        try {
+            System.out.println("Introduce el título de la canción:");
+            String title = stringEntry(scanner);
+            System.out.println("Introduce el artista de la canción:");
+            String artist = stringEntry(scanner);
+            System.out.println("Introduce la duración de la canción en segundos:");
+            int time = numEntry(scanner);
+            Song song = new Song(title, artist, time);
+            playList.add(song);
+            System.out.println("✅ Canción añadida correctamente a la playlist. \n");
+        } catch (Exception e) {
+            System.out.println("❌ Ocurrió un error al añadir la canción. Por favor, inténtalo de nuevo.");
+            addSong(scanner, playList);
+        }
+    }
+
+    public static void deleteSong(Scanner scanner, PlayList playList) {
+        try {
+            if (playList.start == null) {
+                emptyList();
+                return;
+            }
+            System.out.println("Introduce el título de la canción que deseas eliminar:");
+            String title = stringEntry(scanner);
+            Nodo current = playList.start;
+            Nodo previous = null;
+            boolean found = false;
+
+            while (current != null) {
+                if (current.song.title.equalsIgnoreCase(title)) {
+                    found = true;
+                    if (previous == null) {
+                        playList.start = current.next;
+                    } else {
+                        previous.next = current.next;
+                    }
+                    if (current.next == null) {
+                        playList.end = previous;
+                    }
+                    System.out.println("✅ Canción eliminada correctamente. \n");
+                    break;
+                }
+                previous = current;
+                current = current.next;
+            }
+
+            if (!found) {
+                System.out.println("❌ Canción no encontrada en la playlist. \n");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Ocurrió un error al eliminar la canción. Por favor, inténtalo de nuevo.");
+            deleteSong(scanner, playList);
+        }
+    }
+
+    public static void app(Scanner scanner, PlayList playlist) {
+        try {
+            int option = -1;
+            do {
+                menu();
+                option = getOption(scanner);
+                cleanConsole();
+                switch (option) {
+                    case 1:
+                        playlist = new PlayList();
+                        System.out.println("✅ Se ha generado una nueva playlist.");
+                        break;
+
+                    case 2:
+                        addSong(scanner, playlist);
+                        break;
+
+                    case 3:
+                        System.out.println("Canciones en la playlist:");
+                        printSongs(playlist);
+                        break;
+
+                    case 4:
+                        searchSong(scanner, playlist);
+                        break;
+
+                    case 5:
+                        deleteSong(scanner, playlist);
+                        break;
+                    default:
+                        break;
+                }
+            } while (option != 6);
+            scanner.close();
+        } catch (Exception e) {
+            System.out.println("❌ Ocurrió un error mientras se ejecutaba la aplicación.");
+        }
+    }
+
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
+        cleanConsole();
+        Scanner scanner = new Scanner(System.in);
+        PlayList list = new PlayList();
+        app(scanner, list);
     }
 }
