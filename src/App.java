@@ -32,10 +32,10 @@ class Nodo {
     }
 }
 
-class List {
+class PlayList {
     Nodo start, end;
 
-    public List() {
+    public PlayList() {
         start = null;
         end = null;
     }
